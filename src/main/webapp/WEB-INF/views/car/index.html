@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="/layout :: head">
+    <title>List Cars</title>
+</head>
+<body>
+<h3>Car List</h3>
+<p>
+    <a th:href="@{/cars/create}">
+        Add new car
+    </a>
+</p>
+<p>
+    <a th:href="@{/manufacturers}">
+        Manufacturers
+    </a>
+</p>
+<div style="margin-bottom: 10px; margin-left: 110px">
+    <form th:action="@{/cars/search}" method="get">
+        <label>
+            <input type="text" name="search" th:value="${search}" placeholder="Tìm kiếm...">
+        </label>
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+</div>
+<div class="notify">
+    <div th:if="${message}">
+        <span th:text="${message}"></span>
+    </div>
+</div>
+
+<table id="cars">
+    <thead>
+    <tr>
+        <th>Code</th>
+        <th>Name</th>
+        <th>Producer</th>
+        <th>Price</th>
+        <th>Description</th>
+        <th>Image</th>
+        <th>Manufacturer</th>
+        <th>Edit</th>
+        <th>Delete</th>
+        <th>View</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="c,cStatus : ${cars}">
+        <td th:text="${c.getCode()}"></td>
+        <td th:text="${c.getName()}"></td>
+        <td th:text="${c.getProducer()}"></td>
+        <td th:text="${c.getPrice()}"></td>
+        <td th:text="${c.getDescription()}"></td>
+        <td><img style="width: 100px; height: auto" th:src="@{'/i/'+${c.getImg()}}" alt="IMG"></td>
+        <th:block th:if="${c.getManufacturer() != null}">
+            <td th:text="${c.getManufacturer().getName()}"></td>
+        </th:block>
+        <th:block th:unless="${c.getManufacturer() != null}">
+            <td>Null</td>
+        </th:block>
+        <td><a th:href="@{/cars/{id}/update(id=${c.getId()})}">edit</a></td>
+        <td><a th:href="@{/cars/{id}/delete(id=${c.getId()})}">delete</a></td>
+        <td><a th:href="@{/cars/{id}/view(id=${c.getId()})}">view</a></td>
+    </tr>
+    </tbody>
+</table>
+<div>
+    <a class="btn btn-primary" th:if="${cars.hasPrevious()}"
+       th:href="@{/cars/search(page=${cars.number - 1}, search=${search})}">Previous</a>
+    <span th:text="${cars.number + 1}"></span> | <span th:text="${cars.totalPages}"></span>
+    <a class="btn btn-primary" th:if="${cars.hasNext()}"
+       th:href="@{/cars/search(page=${cars.number + 1},  search=${search})}">Next</a>
+</div>
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Number</th>
+    </tr>
+    <tr th:each="c,cStatus: ${manufacturerDTOS}">
+        <td th:text="${c.getManufacturerName()}"></td>
+        <td th:text="${c.getNumber()}"></td>
+    </tr>
+</table>
+<footer th:replace="/layout :: footer"></footer>
+</body>
+</html>
